@@ -1,0 +1,142 @@
+openapi: 3.0.3
+
+info:
+  title: Patient Lookup API
+  version: 1.0.0
+  description: REST API for patient lookup and CRUD operations.
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/patients:
+    get:
+      summary: Get all patients or search by name
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Case-insensitive partial match on first or last name.
+      responses:
+        '200':
+          description: Patient list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Patient'
+
+    post:
+      summary: Create a patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRequest'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation error
+
+  /api/patients/{id}:
+    get:
+      summary: Get patient by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Patient details
+        '404':
+          description: Patient not found
+
+    put:
+      summary: Update patient
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRequest'
+      responses:
+        '200':
+          description: Updated
+        '400':
+          description: Validation error
+        '404':
+          description: Patient not found
+
+    delete:
+      summary: Delete patient
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: Patient not found
+
+components:
+  schemas:
+    Patient:
+      type: object
+      properties:
+        patientId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: string
+
+    PatientRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - dateOfBirth
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: string

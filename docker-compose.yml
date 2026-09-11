@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: patient-lookup-postgres
+    environment:
+      POSTGRES_DB: patientdb
+      POSTGRES_USER: patientapp
+      POSTGRES_PASSWORD: patientpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - patient_pgdata:/var/lib/postgresql/data
+
+volumes:
+  patient_pgdata:
