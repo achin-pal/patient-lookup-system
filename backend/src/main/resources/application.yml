@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/patientdb
+    username: patientapp
+    password: patientpass
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
+  jackson:
+    default-property-inclusion: non_null
+
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+jwt:
+  secret: "cGF0aWVudC1sb29rdXAtand0LXN1cGVyLXNlY3JldC1rZXktMjAyNi1mb3Itc2lnbmluZw=="
+  expiration: 3600000
