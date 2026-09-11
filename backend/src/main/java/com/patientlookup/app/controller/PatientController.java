@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
-@SecurityRequirement(name = "bearerAuth")
 public class PatientController {
     private final PatientService service;
 
