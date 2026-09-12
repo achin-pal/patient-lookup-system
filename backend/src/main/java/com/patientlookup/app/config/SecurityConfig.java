@@ -29,22 +29,22 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    InMemoryUserDetailsManager users(
-            PasswordEncoder encoder) {
-        UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("admin123")).roles("ADMIN").build();
-        UserDetails user = User.withUsername("user")
-                .password(encoder.encode("user123")).roles("USER").build();
-        UserDetails employee = User.withUsername("employee")
-                .password(encoder.encode("employee123")).roles("EMPLOYEE").build();
-
-        return new InMemoryUserDetailsManager(
-                admin,
-                user,
-                employee
-        );
-    }
+//    @Bean
+//    InMemoryUserDetailsManager users(
+//            PasswordEncoder encoder) {
+//        UserDetails admin = User.withUsername("admin")
+//                .password(encoder.encode("admin123")).roles("ADMIN").build();
+//        UserDetails user = User.withUsername("user")
+//                .password(encoder.encode("user123")).roles("USER").build();
+//        UserDetails employee = User.withUsername("employee")
+//                .password(encoder.encode("employee123")).roles("EMPLOYEE").build();
+//
+//        return new InMemoryUserDetailsManager(
+//                admin,
+//                user,
+//                employee
+//        );
+//    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -68,7 +68,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll().requestMatchers(HttpMethod.GET,
-                                "/api/patients/**").hasAnyRole("USER", "EMPLOYEE", "ADMIN")
+                                "/api/patients/**").hasAnyRole("EMPLOYEE", "ADMIN")
                         .requestMatchers(
                                 HttpMethod.POST, "/api/patients/**")
                         .hasRole("ADMIN")

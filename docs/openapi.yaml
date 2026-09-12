@@ -1,142 +1,272 @@
-openapi: 3.0.3
+  openapi: 3.0.3
 
-info:
-  title: Patient Lookup API
-  version: 1.0.0
-  description: REST API for patient lookup and CRUD operations.
+  info:
+    title: Patient Lookup API
+    version: 1.0.0
+    description: REST API for patient lookup and CRUD operations with JWT authentication and role-based access control.
 
-servers:
-  - url: http://localhost:8080
+  servers:
+    - url: http://localhost:8080
 
-paths:
-  /api/patients:
-    get:
-      summary: Get all patients or search by name
-      parameters:
-        - in: query
-          name: name
-          schema:
-            type: string
-          description: Case-insensitive partial match on first or last name.
-      responses:
-        '200':
-          description: Patient list
+  security:
+    - bearerAuth: []
+
+  paths:
+
+    /api/auth/login:
+      post:
+        summary: Login
+        description: Authenticate a user and return a JWT access token.
+        security: []
+        requestBody:
+          required: true
           content:
             application/json:
               schema:
-                type: array
-                items:
+                $ref: '#/components/schemas/LoginRequest'
+        responses:
+          '200':
+            description: Login successful
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/LoginResponse'
+          '401':
+            description: Invalid username or password
+
+    /api/auth/signup:
+      post:
+        summary: Register a new user
+        description: Registers a new application user.
+        security: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupRequest'
+        responses:
+          '200':
+            description: User registered successfully
+          '400':
+            description: Invalid registration request or username already exists
+
+    /api/patients:
+      get:
+        summary: Get all patients or search by name
+        description: Available to ADMIN and EMPLOYEE roles.
+        parameters:
+          - in: query
+            name: name
+            required: false
+            schema:
+              type: string
+            description: Case-insensitive partial match on first or last name.
+        responses:
+          '200':
+            description: Patient list
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patient'
+          '401':
+            description: Authentication required
+          '403':
+            description: Insufficient permissions
+
+      post:
+        summary: Create a patient
+        description: ADMIN role required.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientRequest'
+        responses:
+          '201':
+            description: Patient created successfully
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Patient'
+          '400':
+            description: Validation error
+          '401':
+            description: Authentication required
+          '403':
+            description: ADMIN role required
 
-    post:
-      summary: Create a patient
-      requestBody:
-        required: true
-        content:
-          application/json:
+    /api/patients/{id}:
+      get:
+        summary: Get patient by ID
+        description: Available to ADMIN and EMPLOYEE roles.
+        parameters:
+          - in: path
+            name: id
+            required: true
             schema:
-              $ref: '#/components/schemas/PatientRequest'
-      responses:
-        '201':
-          description: Created
-        '400':
-          description: Validation error
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Patient details
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Patient'
+          '401':
+            description: Authentication required
+          '403':
+            description: Insufficient permissions
+          '404':
+            description: Patient not found
 
-  /api/patients/{id}:
-    get:
-      summary: Get patient by ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Patient details
-        '404':
-          description: Patient not found
-
-    put:
-      summary: Update patient
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        required: true
-        content:
-          application/json:
+      put:
+        summary: Update patient
+        description: ADMIN role required.
+        parameters:
+          - in: path
+            name: id
+            required: true
             schema:
-              $ref: '#/components/schemas/PatientRequest'
-      responses:
-        '200':
-          description: Updated
-        '400':
-          description: Validation error
-        '404':
-          description: Patient not found
-
-    delete:
-      summary: Delete patient
-      parameters:
-        - in: path
-          name: id
+              type: integer
+              format: int64
+        requestBody:
           required: true
-          schema:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientRequest'
+        responses:
+          '200':
+            description: Patient updated successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Patient'
+          '400':
+            description: Validation error
+          '401':
+            description: Authentication required
+          '403':
+            description: ADMIN role required
+          '404':
+            description: Patient not found
+
+      delete:
+        summary: Delete patient
+        description: ADMIN role required.
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '204':
+            description: Patient deleted successfully
+          '401':
+            description: Authentication required
+          '403':
+            description: ADMIN role required
+          '404':
+            description: Patient not found
+
+  components:
+
+    securitySchemes:
+      bearerAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: JWT
+        description: Enter the JWT token returned by the login endpoint.
+
+    schemas:
+
+      LoginRequest:
+        type: object
+        required:
+          - username
+          - password
+        properties:
+          username:
+            type: string
+            example: admin
+          password:
+            type: string
+            format: password
+            example: admin123
+
+      LoginResponse:
+        type: object
+        properties:
+          token:
+            type: string
+            description: JWT access token
+          username:
+            type: string
+            example: admin
+          role:
+            type: string
+            example: ADMIN
+
+      SignupRequest:
+        type: object
+        required:
+          - username
+          - password
+        properties:
+          username:
+            type: string
+            example: employee2
+          password:
+            type: string
+            format: password
+            example: employee123
+
+      Patient:
+        type: object
+        properties:
+          patientId:
             type: integer
             format: int64
-      responses:
-        '204':
-          description: Deleted
-        '404':
-          description: Patient not found
+          firstName:
+            type: string
+          lastName:
+            type: string
+          dateOfBirth:
+            type: string
+            format: date
+          email:
+            type: string
+            format: email
+          phone:
+            type: string
+          address:
+            type: string
 
-components:
-  schemas:
-    Patient:
-      type: object
-      properties:
-        patientId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: string
-
-    PatientRequest:
-      type: object
-      required:
-        - firstName
-        - lastName
-        - dateOfBirth
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        address:
-          type: string
+      PatientRequest:
+        type: object
+        required:
+          - firstName
+          - lastName
+          - dateOfBirth
+        properties:
+          firstName:
+            type: string
+          lastName:
+            type: string
+          dateOfBirth:
+            type: string
+            format: date
+          email:
+            type: string
+            format: email
+          phone:
+            type: string
+          address:
+            type: string
