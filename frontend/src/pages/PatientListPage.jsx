@@ -8,12 +8,12 @@ export default function PatientListPage({ isAdmin }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
-  const load = async () => {
+  const load = async (searchName = name) => {
     try {
       setLoading(true)
       setError('')
 
-      const res = await patientApi.getAll(name.trim())
+      const res = await patientApi.getAll(searchName.trim())
 
       setPatients(res.data)
     } catch (err) {
@@ -30,8 +30,12 @@ export default function PatientListPage({ isAdmin }) {
   }
 
   useEffect(() => {
-    load()
-  }, [])
+    const timeout = setTimeout(() => {
+      load(name)
+    }, 300)
+
+    return () => clearTimeout(timeout)
+  }, [name])
 
   return (
     <main className="container-fluid px-4 page-wrap">
@@ -108,17 +112,21 @@ export default function PatientListPage({ isAdmin }) {
           </span>
 
           <input
-            className="form-control"
-            placeholder="Search by first or last name…"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && load()}
+              className="form-control"
+              placeholder="Search by first or last name…"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  load(name)
+                }
+              }}
           />
 
           <button
-            className="btn btn-primary-custom rounded-3 px-3"
-            onClick={load}
-            disabled={loading}
+              className="btn btn-primary-custom rounded-3 px-3"
+              onClick={() => load(name)}
+              disabled={loading}
           >
             {loading ? 'Loading…' : 'Search'}
           </button>
