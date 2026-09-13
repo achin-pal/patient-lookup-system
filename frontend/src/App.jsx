@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import PatientListPage from './pages/PatientListPage'
 import PatientDetailsPage from './pages/PatientDetailsPage'
 import PatientFormPage from './pages/PatientFormPage'
+import SignupPage from './pages/SignupPage'
 
 import {
   restoreCredentials,
@@ -55,6 +56,7 @@ export default function App() {
       )}
       <Routes>
         <Route path="/login" element={ auth ? <Navigate to="/patients" replace /> : <LoginPage onLogin={handleLogin} /> } />
+        <Route path="/signup" element={ auth ? <Navigate to="/patients" replace /> : <SignupPage />} />
         <Route path="/patients" element={<Protected auth={auth}> <PatientListPage isAdmin={isAdmin} /> </Protected>} />
         <Route path="/patients/new" element={ <Protected auth={auth} adminOnly> <PatientFormPage /> </Protected> } />
         <Route path="/patients/:id" element={<Protected auth={auth}> <PatientDetailsPage isAdmin={isAdmin} /> </Protected> } />

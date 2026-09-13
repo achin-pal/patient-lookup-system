@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { authApi, setCredentials } from '../services/api'
 
 export default function LoginPage({ onLogin }) {
@@ -145,6 +145,14 @@ export default function LoginPage({ onLogin }) {
           <div className="demo-box mt-4">
             <div className="fw-bold text-dark mb-1">
               Demo access
+            </div>
+            <div className="text-center mt-4">
+              <span className="text-secondary">
+                Don't have an account?{' '}
+              </span>
+              <Link to="/signup" className="fw-semibold">
+                Create account
+              </Link>
             </div>
 
             <div>
