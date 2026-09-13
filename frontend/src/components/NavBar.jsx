@@ -21,11 +21,37 @@ export default function NavBar({ username, isAdmin, onLogout }) {
               to="/patients"
               className="d-flex align-items-center gap-2"
             >
-              <span className="brand-mark">+</span>
+              {/*<span className="brand-mark">+</span>*/}
+
+                <span className="brand-mark" aria-hidden="true">
+                  <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                        d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+
+                    <path
+                        d="M3.5 12h4l1.4-3 2.2 6 1.8-4 1.3 1h6.3"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
 
               <span>
                 <span className="d-block brand-title">
-                  CareConnect
+                  CarePlus
                 </span>
 
                 <span className="d-block brand-subtitle">

@@ -50,8 +50,33 @@ export default function LoginPage({ onLogin }) {
       <section className="login-panel-left">
         <div>
           <div className="d-flex align-items-center gap-2 mb-5">
-            <span className="brand-mark">+</span>
-            <span className="fw-bold fs-5">CareConnect</span>
+            {/*<span className="brand-mark">+</span>*/}
+            <span className="brand-mark" aria-hidden="true">
+              <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                    d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+
+                <path
+                    d="M3.5 12h4l1.4-3 2.2 6 1.8-4 1.3 1h6.3"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span className="fw-bold fs-5">CarePlus</span>
           </div>
 
           <div className="eyebrow text-white-50 mb-3">
@@ -142,17 +167,18 @@ export default function LoginPage({ onLogin }) {
             </button>
           </form>
 
-          <div className="demo-box mt-4">
-            <div className="fw-bold text-dark mb-1">
-              Demo access
-            </div>
-            <div className="text-center mt-4">
+          <div className="text-center mt-4">
               <span className="text-secondary">
                 Don't have an account?{' '}
               </span>
-              <Link to="/signup" className="fw-semibold">
-                Create account
-              </Link>
+            <Link to="/signup" className="fw-semibold">
+              Create account
+            </Link>
+          </div>
+
+          <div className="demo-box mt-4">
+            <div className="fw-bold text-dark mb-1">
+              Demo access
             </div>
 
             <div>
