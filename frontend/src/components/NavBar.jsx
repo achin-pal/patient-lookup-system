@@ -63,27 +63,27 @@ export default function NavBar({ username, isAdmin, onLogout }) {
             <nav className="d-none d-md-flex ms-3 gap-1">
               <Link
                 className={`nav-link-custom ${
-  location.pathname === '/patients'
-      ? 'active'
-      : ''
-}`}
+                      location.pathname === '/patients'
+                          ? 'active'
+                          : ''
+                    }`}
                 to="/patients"
               >
                 Patients
               </Link>
 
-              {isAdmin && (
-                <Link
-                  className={`nav-link-custom ${
-  location.pathname.includes('/new')
-      ? 'active'
-      : ''
-}`}
-                  to="/patients/new"
-                >
-                  Add patient
-                </Link>
-              )}
+              {/*{isAdmin && (*/}
+              {/*  <Link*/}
+              {/*    className={`nav-link-custom ${*/}
+              {/*        location.pathname.includes('/new')*/}
+              {/*            ? 'active'*/}
+              {/*            : ''*/}
+              {/*      }`}*/}
+              {/*    to="/patients/new"*/}
+              {/*  >*/}
+              {/*    Add patient*/}
+              {/*  </Link>*/}
+              {/*)}*/}
             </nav>
           </div>
 
