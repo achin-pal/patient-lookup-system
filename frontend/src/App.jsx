@@ -1,35 +1,67 @@
 import { useState } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom'
+
 import NavBar from './components/NavBar'
 import LoginPage from './pages/LoginPage'
 import PatientListPage from './pages/PatientListPage'
 import PatientDetailsPage from './pages/PatientDetailsPage'
 import PatientFormPage from './pages/PatientFormPage'
-import { restoreCredentials } from './services/api'
 
-function Protected({ username, children, adminOnly = false }) {
+import {
+  restoreCredentials,
+  clearCredentials
+} from './services/api'
+
+function Protected({ auth, children, adminOnly = false }) {
   const location = useLocation()
-  if (!username) return <Navigate to="/login" state={{ from: location }} replace />
-  if (adminOnly && username !== 'admin') return <Navigate to="/patients" replace />
+
+  if (!auth) {
+    return (
+      <Navigate to="/login" state={{ from: location }} replace />
+    )
+  }
+
+  if (adminOnly && auth.role !== 'ADMIN') {
+    return <Navigate to="/patients" replace />
+  }
+
   return children
 }
 
 export default function App() {
-  const stored = restoreCredentials()
-  const [username, setUsername] = useState(stored?.username || '')
-  const isAdmin = username === 'admin'
+  const [auth, setAuth] = useState(() => restoreCredentials())
+
+  const isAdmin = auth?.role === 'ADMIN'
+
+  const handleLogin = () => {
+    const storedAuth = restoreCredentials()
+    setAuth(storedAuth)
+  }
+
+  const handleLogout = () => {
+    clearCredentials()
+    setAuth(null)
+  }
 
   return (
     <div className="app-shell">
-      {username && <NavBar username={username} isAdmin={isAdmin} />}
+      {auth && (
+        <NavBar username={auth.username} isAdmin={isAdmin} onLogout={handleLogout}/>
+      )}
       <Routes>
-        <Route path="/login" element={<LoginPage onLogin={setUsername} />} />
-        <Route path="/patients" element={<Protected username={username}><PatientListPage isAdmin={isAdmin} /></Protected>} />
-        <Route path="/patients/new" element={<Protected username={username} adminOnly><PatientFormPage /></Protected>} />
-        <Route path="/patients/:id" element={<Protected username={username}><PatientDetailsPage isAdmin={isAdmin} /></Protected>} />
-        <Route path="/patients/:id/edit" element={<Protected username={username} adminOnly><PatientFormPage editing /></Protected>} />
-        <Route path="*" element={<Navigate to={username ? '/patients' : '/login'} replace />} />
+        <Route path="/login" element={ auth ? <Navigate to="/patients" replace /> : <LoginPage onLogin={handleLogin} /> } />
+        <Route path="/patients" element={<Protected auth={auth}> <PatientListPage isAdmin={isAdmin} /> </Protected>} />
+        <Route path="/patients/new" element={ <Protected auth={auth} adminOnly> <PatientFormPage /> </Protected> } />
+        <Route path="/patients/:id" element={<Protected auth={auth}> <PatientDetailsPage isAdmin={isAdmin} /> </Protected> } />
+        <Route path="/patients/:id/edit"  element={ <Protected auth={auth} adminOnly> <PatientFormPage editing /> </Protected> } />
+        <Route path="*" element={ <Navigate to={auth ? '/patients' : '/login'} replace />} />
       </Routes>
     </div>
   )
 }
+
