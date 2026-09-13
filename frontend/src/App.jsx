@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Navigate,
   Route,
@@ -50,10 +50,24 @@ export default function App() {
     setAuth(null)
   }
 
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('carePlusTheme') === 'dark'
+  })
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode)
+
+    localStorage.setItem(
+        'carePlusTheme',
+        darkMode ? 'dark' : 'light'
+    )
+  }, [darkMode])
+
   return (
     <div className="app-shell">
       {auth && (
-        <NavBar username={auth.username} isAdmin={isAdmin} onLogout={handleLogout}/>
+        <NavBar username={auth.username} isAdmin={isAdmin} onLogout={handleLogout}  darkMode={darkMode}
+                onToggleTheme={() => setDarkMode((current) => !current)}/>
       )}
       <Routes>
         <Route path="/login" element={ auth ? <Navigate to="/patients" replace /> : <LoginPage onLogin={handleLogin} /> } />

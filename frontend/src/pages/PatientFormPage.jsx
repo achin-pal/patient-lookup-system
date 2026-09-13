@@ -34,7 +34,7 @@ export default function PatientFormPage({ editing = false }) {
   return (
     <main className="container-fluid px-4 page-wrap">
       <div className="container-xl" style={{ maxWidth: 940 }}>
-        <div className="mb-3"><button className="btn btn-link text-secondary p-0" onClick={() => navigate(-1)}>← Back</button></div>
+        <div className="mb-3"><button className="btn text-secondary p-0" onClick={() => navigate(-1)}>← Back</button></div>
         <div className="mb-4"><div className="eyebrow">Patient management</div><h1 className="page-title">{editing ? 'Edit patient' : 'Add a new patient'}</h1><p className="page-subtitle">{editing ? 'Update the details below and save the patient record.' : 'Create a patient record using the information available to your team.'}</p></div>
 
         <div className="surface form-shell">

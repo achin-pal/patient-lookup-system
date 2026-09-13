@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
-export default function NavBar({ username, isAdmin, onLogout }) {
+export default function NavBar({ username, isAdmin, onLogout, darkMode, onToggleTheme }) {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -107,6 +107,13 @@ export default function NavBar({ username, isAdmin, onLogout }) {
               </span>
               {username}
             </span>
+            <button
+                className="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                onClick={onToggleTheme}
+                title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {darkMode ? '☀ Light' : '☾ Dark'}
+            </button>
 
             <button
               className="btn btn-sm btn-outline-secondary rounded-pill px-3"
