@@ -66,9 +66,7 @@ export default function NavBar({ username, isAdmin, onLogout }) {
               <span className="user-avatar">
                 {initials}
               </span>
-
               {username}
-              {isAdmin ? ' • Admin' : ' • Employee'}
             </span>
 
             <button
