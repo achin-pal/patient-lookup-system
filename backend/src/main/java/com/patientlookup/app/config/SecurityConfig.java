@@ -76,6 +76,8 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/patients/**")
                         .hasRole("ADMIN")
+                        .requestMatchers("/api/users/**")
+                        .hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(

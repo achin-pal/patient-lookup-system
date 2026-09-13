@@ -88,6 +88,7 @@ export default function PatientListPage({ isAdmin }) {
 
           <div className="col-sm-6 col-lg-4">
             <div className="surface stat-card h-100 d-flex align-items-center justify-content-between">
+
               <div>
                 <div className="stat-label">
                   Access level
@@ -96,10 +97,18 @@ export default function PatientListPage({ isAdmin }) {
                 <div className="stat-value fs-5">
                   {isAdmin ? 'Administrator' : 'Employee'}
                 </div>
-              </div>
 
+                {isAdmin && (
+                    <Link
+                        to="/users"
+                        className="btn btn-sm btn-outline-primary mt-2"
+                    >
+                      Manage access
+                    </Link>
+                )}
+              </div>
               <span className="stat-icon">
-                ✓
+                  ✓
               </span>
             </div>
           </div>

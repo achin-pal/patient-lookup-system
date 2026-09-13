@@ -80,4 +80,14 @@ export const patientApi = {
     remove: (id) => api.delete(`/patients/${id}`)
 }
 
+export const userApi = {
+    getAll: () =>
+        api.get('/users'),
+
+    updateRole: (id, role) =>
+        api.put(`/users/${id}/role`, {
+            role
+        })
+}
+
 export default api

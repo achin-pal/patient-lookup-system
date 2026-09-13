@@ -12,6 +12,7 @@ import PatientListPage from './pages/PatientListPage'
 import PatientDetailsPage from './pages/PatientDetailsPage'
 import PatientFormPage from './pages/PatientFormPage'
 import SignupPage from './pages/SignupPage'
+import UsersPage from './pages/UsersPage'
 
 import {
   restoreCredentials,
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="/patients/:id" element={<Protected auth={auth}> <PatientDetailsPage isAdmin={isAdmin} /> </Protected> } />
         <Route path="/patients/:id/edit"  element={ <Protected auth={auth} adminOnly> <PatientFormPage editing /> </Protected> } />
         <Route path="*" element={ <Navigate to={auth ? '/patients' : '/login'} replace />} />
+        <Route path="/users" element={ <Protected auth={auth} adminOnly> <UsersPage /> </Protected> } />
       </Routes>
     </div>
   )
