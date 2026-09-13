@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { authApi, setCredentials } from '../services/api'
 
 export default function LoginPage({ onLogin }) {
-  const [username, setUsername] = useState('admin')
-  const [password, setPassword] = useState('admin123')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
