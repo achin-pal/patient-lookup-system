@@ -107,6 +107,8 @@ The application is configured to use:
 Host: localhost
 Port: 5432
 Database: patientdb
+
+I have used docker for DB instance
 ```
 
 The database scripts used by Spring Boot are located at:
