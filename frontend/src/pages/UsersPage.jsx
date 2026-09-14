@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
-import { userApi } from '../services/api'
+import {
+    restoreCredentials,
+    userApi
+} from '../services/api'
 
 export default function UsersPage() {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+
+    const auth = restoreCredentials()
+    const currentUsername = auth?.username
 
     const loadUsers = async () => {
         try {
@@ -40,7 +46,14 @@ export default function UsersPage() {
                         : user
                 )
             )
-        } catch {
+        } catch (err) {
+            if (err.response?.status === 403) {
+                setError(
+                    'You cannot change your own access level.'
+                )
+                return
+            }
+
             setError('Unable to update access level.')
         }
     }
@@ -100,53 +113,80 @@ export default function UsersPage() {
 
                             <tbody>
 
-                            {!loading && users.map((user) => (
-                                <tr key={user.id}>
+                            {!loading && users.map((user) => {
+                                const isCurrentUser =
+                                    user.username === currentUsername
 
-                                    <td>
-                                        #{user.id}
-                                    </td>
+                                return (
+                                    <tr key={user.id}>
 
-                                    <td>
-                                        <strong>
-                                            {user.username}
-                                        </strong>
-                                    </td>
+                                        <td>
+                                            #{user.id}
+                                        </td>
 
-                                    <td>
-                      <span className={
-                          user.role === 'ADMIN'
-                              ? 'badge bg-primary'
-                              : 'badge bg-secondary'
-                      }>
-                        {user.role}
-                      </span>
-                                    </td>
+                                        <td>
+                                            <strong>
+                                                {user.username}
+                                            </strong>
 
-                                    <td className="text-end">
-                                        <select
-                                            className="form-select form-select-sm d-inline-block"
-                                            style={{ width: '150px' }}
-                                            value={user.role}
-                                            onChange={(e) =>
-                                                changeRole(
-                                                    user.id,
-                                                    e.target.value
-                                                )
-                                            }
-                                        >
-                                            <option value="EMPLOYEE">
-                                                Employee
-                                            </option>
+                                            {isCurrentUser && (
+                                                <span className="badge bg-light text-dark ms-2">
+                                                    You
+                                                </span>
+                                            )}
+                                        </td>
 
-                                            <option value="ADMIN">
-                                                Administrator
-                                            </option>
-                                        </select>
-                                    </td>
+                                        <td>
+                                            <span
+                                                className={
+                                                    user.role === 'ADMIN'
+                                                        ? 'badge bg-primary'
+                                                        : 'badge bg-secondary'
+                                                }
+                                            >
+                                                {user.role}
+                                            </span>
+                                        </td>
 
-                                </tr>
-                            ))}
+                                        <td className="text-end">
+
+                                            <select
+                                                className="form-select form-select-sm d-inline-block"
+                                                style={{ width: '150px' }}
+                                                value={user.role}
+                                                disabled={isCurrentUser}
+                                                title={
+                                                    isCurrentUser
+                                                        ? 'You cannot change your own access level'
+                                                        : 'Change user access level'
+                                                }
+                                                onChange={(e) =>
+                                                    changeRole(
+                                                        user.id,
+                                                        e.target.value
+                                                    )
+                                                }
+                                            >
+                                                <option value="EMPLOYEE">
+                                                    Employee
+                                                </option>
+
+                                                <option value="ADMIN">
+                                                    Administrator
+                                                </option>
+                                            </select>
+
+                                            {isCurrentUser && (
+                                                <div className="small text-secondary mt-1">
+                                                    Your access cannot be changed
+                                                </div>
+                                            )}
+
+                                        </td>
+
+                                    </tr>
+                                )
+                            })}
 
                             </tbody>
                         </table>

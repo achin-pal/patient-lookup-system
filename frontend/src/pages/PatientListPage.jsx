@@ -114,7 +114,7 @@ export default function PatientListPage({ isAdmin }) {
                 </div>
 
                 <div className="stat-value">
-                  {patients.length}
+                  {totalElements}
                 </div>
               </div>
 
@@ -284,11 +284,7 @@ export default function PatientListPage({ isAdmin }) {
 
             </table>
             {totalPages > 1 && (
-                <div className="d-flex justify-content-between align-items-center px-4 py-3 border-top">
-
-                  <div className="small text-secondary">
-                    {totalElements} total patients
-                  </div>
+                <div className="d-flex justify-content-center align-items-center px-4 py-3 border-top">
 
                   <div className="d-flex align-items-center gap-2">
 
