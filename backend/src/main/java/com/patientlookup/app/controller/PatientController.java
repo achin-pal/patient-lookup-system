@@ -5,14 +5,16 @@ import com.patientlookup.app.dto.PatientResponse;
 import com.patientlookup.app.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springdoc.core.annotations.ParameterObject;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/patients")
 public class PatientController {
@@ -31,12 +33,22 @@ public class PatientController {
             @PageableDefault(size = 5, sort = "patientId")
             Pageable pageable) {
 
+        log.info(
+                "GET /api/patients - name={}, page={}, size={}",
+                name,
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
         return service.findAll(name, pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a patient by patient ID")
     public PatientResponse getPatient(@PathVariable Long id) {
+
+        log.info("GET /api/patients/{}", id);
+
         return service.findById(id);
     }
 
@@ -45,9 +57,13 @@ public class PatientController {
     public ResponseEntity<PatientResponse> createPatient(
             @Valid @RequestBody PatientRequest request) {
 
+        log.info("POST /api/patients");
+
+        PatientResponse patient = service.create(request);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.create(request));
+                .body(patient);
     }
 
     @PutMapping("/{id}")
@@ -56,6 +72,8 @@ public class PatientController {
             @PathVariable Long id,
             @Valid @RequestBody PatientRequest request) {
 
+        log.info("PUT /api/patients/{}", id);
+
         return service.update(id, request);
     }
 
@@ -63,6 +81,8 @@ public class PatientController {
     @Operation(summary = "Delete a patient")
     public ResponseEntity<Void> deletePatient(
             @PathVariable Long id) {
+
+        log.info("DELETE /api/patients/{}", id);
 
         service.delete(id);
 
