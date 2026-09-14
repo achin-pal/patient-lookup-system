@@ -12,4 +12,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             String lastName,
             Pageable pageable
     );
+
+    boolean existsByEmailIgnoreCase(String email);
 }

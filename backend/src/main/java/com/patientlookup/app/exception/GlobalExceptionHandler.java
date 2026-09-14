@@ -94,6 +94,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateEmail(
+            DuplicateEmailException ex) {
+
+        log.warn("Duplicate patient email rejected");
+
+        return build(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+    }
+
     private ResponseEntity<Map<String, Object>> build(
             HttpStatus status,
             String message) {

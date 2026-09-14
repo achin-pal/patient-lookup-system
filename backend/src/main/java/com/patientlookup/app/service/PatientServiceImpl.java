@@ -3,6 +3,7 @@ package com.patientlookup.app.service;
 import com.patientlookup.app.dto.PatientRequest;
 import com.patientlookup.app.dto.PatientResponse;
 import com.patientlookup.app.entity.Patient;
+import com.patientlookup.app.exception.DuplicateEmailException;
 import com.patientlookup.app.exception.PatientNotFoundException;
 import com.patientlookup.app.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,13 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = new Patient();
         apply(patient, request);
+
+        if (request.email() != null
+                && !request.email().isBlank()
+                && repository.existsByEmailIgnoreCase(request.email().trim())) {
+
+            throw new DuplicateEmailException(request.email().trim());
+        }
 
         Patient savedPatient = repository.save(patient);
 
