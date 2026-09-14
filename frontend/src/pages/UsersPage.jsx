@@ -130,7 +130,7 @@ export default function UsersPage() {
                                             </strong>
 
                                             {isCurrentUser && (
-                                                <span className="badge bg-light text-dark ms-2">
+                                                <span className="badge current-user-badge ms-2">
                                                     You
                                                 </span>
                                             )}

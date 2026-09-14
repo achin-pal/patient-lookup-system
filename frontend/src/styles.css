@@ -544,6 +544,16 @@ body.dark-mode .user-avatar {
   color: #bfdbfe;
 }
 
+.current-user-badge {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+body.dark-mode .current-user-badge {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
 /* General surfaces */
 
 body.dark-mode .surface {
