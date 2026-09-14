@@ -2,14 +2,14 @@
 
 CarePlus is a full-stack patient lookup and management application built with Spring Boot, PostgreSQL, and React.
 
-The application provides secure patient search and management features using JWT authentication and role-based access control.
+The application provides secure patient search and management using JWT authentication and role-based access control.
 
 ## Features
 
 * JWT-based authentication
 * Role-based access control
 * Patient search by first or last name
-* Server-side patient pagination
+* Server-side pagination
 * View patient details
 * Create patient records
 * Update patient records
@@ -19,9 +19,10 @@ The application provides secure patient search and management features using JWT
 * Administrator user access management
 * Administrators cannot change their own access level
 * Swagger / OpenAPI documentation
-* Light and dark mode
-* Application logging
 * Centralized exception handling
+* Application logging
+* Light and dark theme support
+* Backend unit and controller tests
 
 ## Technology Stack
 
@@ -33,9 +34,11 @@ The application provides secure patient search and management features using JWT
 * Spring Security
 * JWT
 * PostgreSQL
-* Swagger / OpenAPI
-* Lombok
 * Maven
+* Lombok
+* Swagger / OpenAPI
+* JUnit 5
+* Mockito
 
 ### Frontend
 
@@ -47,7 +50,7 @@ The application provides secure patient search and management features using JWT
 
 ## Test Accounts
 
-The following accounts are available for testing.
+The following accounts are available for demonstration and testing.
 
 ### Administrator
 
@@ -62,8 +65,6 @@ Password: admin123
 Username: employee
 Password: employee123
 ```
-
-These accounts are intended for demonstration and assessment purposes.
 
 ## Role-Based Access
 
@@ -80,11 +81,11 @@ These accounts are intended for demonstration and assessment purposes.
 
 Administrators cannot change their own access level.
 
-Public signup always creates an account with the `EMPLOYEE` role.
+Public signup always creates a user with the `EMPLOYEE` role.
 
 ## Prerequisites
 
-Before running the application, install:
+Install the following before running the application:
 
 * Java 17
 * Maven
@@ -100,7 +101,7 @@ Create a PostgreSQL database named:
 patientdb
 ```
 
-The application is configured to connect to PostgreSQL on:
+The application is configured to use:
 
 ```text
 Host: localhost
@@ -115,9 +116,11 @@ backend/src/main/resources/schema.sql
 backend/src/main/resources/data.sql
 ```
 
-`schema.sql` creates the required database tables and indexes.
+`schema.sql` creates the required tables and indexes.
 
-`data.sql` contains the application seed data.
+`data.sql` contains the initial patient seed data.
+
+Application users such as the test administrator and employee accounts are initialized by the backend when required.
 
 ## Running the Backend
 
@@ -139,7 +142,13 @@ On Windows:
 mvnw.cmd spring-boot:run
 ```
 
-The backend runs at:
+If Maven is installed globally, you can also run:
+
+```bash
+mvn spring-boot:run
+```
+
+The backend will be available at:
 
 ```text
 http://localhost:8080
@@ -153,7 +162,7 @@ Navigate to the frontend directory:
 cd frontend
 ```
 
-Install dependencies:
+Install frontend dependencies:
 
 ```bash
 npm install
@@ -165,7 +174,7 @@ Start the Vite development server:
 npm run dev
 ```
 
-The frontend runs at:
+The frontend will be available at:
 
 ```text
 http://localhost:5173
@@ -173,7 +182,7 @@ http://localhost:5173
 
 ## Frontend Environment Configuration
 
-An example frontend environment file is included:
+An example environment file is provided at:
 
 ```text
 frontend/.env.example
@@ -185,9 +194,15 @@ It contains:
 VITE_API_URL=http://localhost:8080/api
 ```
 
-The application also uses `http://localhost:8080/api` as its default API URL when the environment variable is not provided.
+The frontend also defaults to:
 
-If a custom frontend environment configuration is needed, copy:
+```text
+http://localhost:8080/api
+```
+
+when `VITE_API_URL` is not configured.
+
+If a custom configuration is required, copy:
 
 ```text
 frontend/.env.example
@@ -199,7 +214,7 @@ to:
 frontend/.env
 ```
 
-and update the API URL as required.
+and update the API URL.
 
 ## Swagger / OpenAPI
 
@@ -211,13 +226,13 @@ http://localhost:8080/swagger-ui.html
 
 Protected endpoints require JWT authentication.
 
-To test secured endpoints in Swagger:
+To test protected endpoints:
 
-1. Call the login endpoint using one of the test accounts.
-2. Copy the JWT token returned by the login request.
+1. Call `POST /api/auth/login` using one of the test accounts.
+2. Copy the returned JWT token.
 3. Click **Authorize** in Swagger UI.
 4. Enter the JWT token.
-5. Test the protected API endpoints.
+5. Test the secured endpoints.
 
 ## API Endpoints
 
@@ -246,7 +261,9 @@ Example:
 GET /api/patients?name=Smith&page=0&size=5
 ```
 
-A valid sort can also be supplied:
+Sorting is also supported.
+
+Example:
 
 ```text
 GET /api/patients?page=0&size=5&sort=patientId,asc
@@ -263,7 +280,7 @@ These endpoints are restricted to users with the `ADMIN` role.
 
 ## Patient Search and Pagination
 
-The patient listing uses server-side pagination.
+The patient list uses server-side pagination.
 
 The default page size is:
 
@@ -271,9 +288,9 @@ The default page size is:
 5
 ```
 
-The application displays the total number of matching patient records at the top of the patient list.
+The application displays the total number of matching patient records at the top of the page.
 
-Pagination controls allow navigation between pages.
+Pagination controls allow navigation between result pages.
 
 Patient name search works together with pagination.
 
@@ -287,11 +304,12 @@ Handled scenarios include:
 * User not found
 * Invalid request data
 * Duplicate patient email
+* Duplicate username during signup
 * Unauthorized access
 * Forbidden operations
 * Unexpected server errors
 
-Duplicate patient emails return a meaningful error instead of a generic server error.
+Duplicate patient emails return a meaningful conflict response instead of a generic server error.
 
 ## Security
 
@@ -299,15 +317,25 @@ The application uses Spring Security and JWT authentication.
 
 Passwords are encoded before being stored.
 
-Protected API endpoints require a valid JWT token.
+Protected endpoints require a valid JWT token.
 
 ### Administrator
 
-Administrators have full patient management access and can manage application user roles.
+Administrators can:
+
+* View and search patients
+* View patient details
+* Create patients
+* Update patients
+* Delete patients
+* View application users
+* Change other users' roles
+
+Administrators cannot change their own access level.
 
 ### Employee
 
-Employees have read-only patient access and can:
+Employees can:
 
 * View patients
 * Search patients
@@ -329,7 +357,48 @@ Logging is included for:
 * Not-found exceptions
 * Unexpected application errors
 
-Sensitive values such as passwords and JWT tokens are not written to application logs.
+Sensitive information such as passwords and JWT token values is not written to application logs.
+
+## Testing
+
+The backend includes unit and controller tests using JUnit 5, Mockito, MockMvc, and Spring Security test support.
+
+The test suite includes coverage for:
+
+* Patient creation
+* Patient lookup
+* Patient update
+* Patient deletion
+* Duplicate patient email handling
+* Patient not-found behavior
+* Role-based patient endpoint security
+* Controller validation and HTTP responses
+* Employee signup
+* Duplicate username handling
+* Password encoding during signup
+* Administrator user access management
+* Administrator self-role-change protection
+* Invalid role updates
+* Missing application users
+
+Run the test suite with:
+
+```bash
+cd backend
+mvn test
+```
+
+Run the full Maven build with tests:
+
+```bash
+mvn clean install
+```
+
+A successful build should complete with:
+
+```text
+BUILD SUCCESS
+```
 
 ## Project Structure
 
@@ -337,11 +406,16 @@ Sensitive values such as passwords and JWT tokens are not written to application
 patient-lookup-app/
 ├── backend/
 │   ├── src/
-│   │   └── main/
-│   │       ├── java/
-│   │       └── resources/
-│   │           ├── schema.sql
-│   │           └── data.sql
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   └── resources/
+│   │   │       ├── schema.sql
+│   │   │       └── data.sql
+│   │   │
+│   │   └── test/
+│   │       └── java/
+│   │           └── com/patientlookup/app/
+│   │
 │   └── pom.xml
 │
 ├── frontend/
@@ -361,15 +435,16 @@ In addition to the core patient CRUD requirements, the project includes:
 * Role-based authorization
 * Employee signup
 * Administrator user management
-* Self-role-change protection for administrators
+* Administrator self-role-change protection
 * Server-side pagination
 * Live patient search
 * Duplicate email protection
-* Swagger authentication support
+* Swagger JWT authentication support
 * Centralized exception handling
 * Application logging
 * Responsive user interface
 * Persistent light and dark themes
+* Automated backend tests
 
 ## Application URLs
 
@@ -399,10 +474,11 @@ This project demonstrates:
 * PostgreSQL database integration
 * Spring Data JPA
 * JWT authentication
-* Role-based access control
+* Role-based authorization
 * React frontend development
 * API documentation with Swagger / OpenAPI
 * Validation and exception handling
 * Pagination and search
 * Application logging
+* Automated backend testing
 * Frontend theme management
