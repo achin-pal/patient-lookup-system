@@ -69,7 +69,13 @@ export const authApi = {
 }
 
 export const patientApi = {
-    getAll: (name = '') => api.get('/patients', {params: name ? {name} : {}}),
+    getAll: (name = '', page = 0, size = 5) => api.get('/patients', {
+            params: {
+                ...(name ? { name } : {}),
+                page,
+                size
+            }
+        }),
 
     getById: (id) => api.get(`/patients/${id}`),
 

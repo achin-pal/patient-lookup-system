@@ -5,10 +5,10 @@ import com.patientlookup.app.dto.PatientResponse;
 import com.patientlookup.app.entity.Patient;
 import com.patientlookup.app.exception.PatientNotFoundException;
 import com.patientlookup.app.repository.PatientRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -19,31 +19,46 @@ public class PatientServiceImpl implements PatientService {
         this.repository = repository;
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public List<PatientResponse> findAll(String name) {
-        List<Patient> patients = (name == null || name.isBlank())
-                ? repository.findAll()
-                : repository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
-        return patients.stream().map(this::toResponse).toList();
+    public Page<PatientResponse> findAll(
+            String name,
+            Pageable pageable) {
+
+        Page<Patient> patients =
+                (name == null || name.isBlank())
+                        ? repository.findAll(pageable)
+                        : repository
+                          .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+                                  name,
+                                  name,
+                                  pageable
+                          );
+
+        return patients.map(this::toResponse);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public PatientResponse findById(Long id) {
         return toResponse(repository.findById(id).orElseThrow(() -> new PatientNotFoundException(id)));
     }
 
+    @Override
     public PatientResponse create(PatientRequest request) {
         Patient p = new Patient();
         apply(p, request);
         return toResponse(repository.save(p));
     }
 
+    @Override
     public PatientResponse update(Long id, PatientRequest request) {
         Patient p = repository.findById(id).orElseThrow(() -> new PatientNotFoundException(id));
         apply(p, request);
         return toResponse(repository.save(p));
     }
 
+    @Override
     public void delete(Long id) {
         if (!repository.existsById(id)) throw new PatientNotFoundException(id);
         repository.deleteById(id);

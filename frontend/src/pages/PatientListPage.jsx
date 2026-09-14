@@ -7,22 +7,55 @@ export default function PatientListPage({ isAdmin }) {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const pageSize = 5
 
-  const load = async (searchName = name) => {
+  const load = async (
+      searchName = name,
+      page = currentPage
+  ) => {
     try {
       setLoading(true)
       setError('')
 
-      const res = await patientApi.getAll(searchName.trim())
+      const res = await patientApi.getAll(
+          searchName.trim(),
+          page,
+          pageSize
+      )
 
-      setPatients(res.data)
+      setPatients(res.data.content)
+
+      setCurrentPage(
+          res.data.page?.number ?? res.data.number ?? 0
+      )
+
+      setTotalPages(
+          res.data.page?.totalPages ??
+          res.data.totalPages ??
+          0
+      )
+
+      setTotalElements(
+          res.data.page?.totalElements ??
+          res.data.totalElements ??
+          0
+      )
     } catch (err) {
       if (err.response?.status === 403) {
-        setError('You do not have permission to access patient records.')
+        setError(
+            'You do not have permission to access patient records.'
+        )
       } else if (err.response?.status === 401) {
-        setError('Your session has expired. Please sign in again.')
+        setError(
+            'Your session has expired. Please sign in again.'
+        )
       } else {
-        setError('Could not load patients. Make sure the API is running.')
+        setError(
+            'Could not load patients. Make sure the API is running.'
+        )
       }
     } finally {
       setLoading(false)
@@ -31,11 +64,16 @@ export default function PatientListPage({ isAdmin }) {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      load(name)
+      setCurrentPage(0)
+      load(name, 0)
     }, 300)
 
     return () => clearTimeout(timeout)
   }, [name])
+
+  useEffect(() => {
+    load(name, currentPage)
+  }, [currentPage])
 
   return (
     <main className="container-fluid px-4 page-wrap">
@@ -245,6 +283,45 @@ export default function PatientListPage({ isAdmin }) {
               </tbody>
 
             </table>
+            {totalPages > 1 && (
+                <div className="d-flex justify-content-between align-items-center px-4 py-3 border-top">
+
+                  <div className="small text-secondary">
+                    {totalElements} total patients
+                  </div>
+
+                  <div className="d-flex align-items-center gap-2">
+
+                    <button
+                        className="btn btn-sm btn-outline-secondary"
+                        disabled={currentPage === 0 || loading}
+                        onClick={() =>
+                            setCurrentPage((page) => page - 1)
+                        }
+                    >
+                      Previous
+                    </button>
+
+                    <span className="small">
+                      Page {currentPage + 1} of {totalPages}
+                    </span>
+
+                    <button
+                        className="btn btn-sm btn-outline-secondary"
+                        disabled={
+                            currentPage + 1 >= totalPages ||
+                            loading
+                        }
+                        onClick={() =>
+                            setCurrentPage((page) => page + 1)
+                        }
+                    >
+                      Next
+                    </button>
+
+                  </div>
+                </div>
+            )}
           </div>
         </div>
       </div>
