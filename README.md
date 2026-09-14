@@ -92,13 +92,22 @@ Install the following before running the application:
 * Node.js
 * npm
 * PostgreSQL
+* Docker Desktop, if using the provided Docker setup for PostgreSQL
 
 ## Database Setup
 
-Create a PostgreSQL database named:
+The application uses PostgreSQL.
+
+A Docker Compose configuration is included at the project root:
 
 ```text
-patientdb
+docker-compose.yml
+```
+
+If Docker is used, start the PostgreSQL container from the project root with:
+
+```bash
+docker compose up -d
 ```
 
 The application is configured to use:
@@ -107,8 +116,6 @@ The application is configured to use:
 Host: localhost
 Port: 5432
 Database: patientdb
-
-I have used docker for DB instance
 ```
 
 The database scripts used by Spring Boot are located at:
@@ -224,6 +231,12 @@ Swagger UI is available at:
 
 ```text
 http://localhost:8080/swagger-ui.html
+```
+
+The OpenAPI specification is also available in the repository at:
+
+```text
+docs/openapi.yaml
 ```
 
 Protected endpoints require JWT authentication.
@@ -405,7 +418,7 @@ BUILD SUCCESS
 ## Project Structure
 
 ```text
-patient-lookup-app/
+patient-lookup-system/
 ├── backend/
 │   ├── src/
 │   │   ├── main/
@@ -420,12 +433,17 @@ patient-lookup-app/
 │   │
 │   └── pom.xml
 │
+├── docs/
+│   ├── openapi.yaml
+│   └── screenshots/
+│
 ├── frontend/
 │   ├── src/
 │   ├── .env.example
 │   ├── package.json
 │   └── package-lock.json
 │
+├── docker-compose.yml
 └── README.md
 ```
 
@@ -484,3 +502,75 @@ This project demonstrates:
 * Application logging
 * Automated backend testing
 * Frontend theme management
+
+## Screenshots
+
+The screenshots below provide a visual walkthrough of the main application functionality for administrator and employee users.
+
+### 1. Sign Up
+
+![Sign Up](docs/screenshots/01-sign-up-page.png)
+
+### 2. Sign In
+
+![Sign In](docs/screenshots/02-signin-page.png)
+
+### 3. Administrator Patient List
+
+![Administrator Patient List](docs/screenshots/03-admin-view-patients-page.png)
+
+### 4. Administrator Patient List - Additional View
+
+![Administrator Patient List Additional View](docs/screenshots/04-admin-view-patients-page-1.png)
+
+### 5. Administrator Patient Details
+
+![Administrator Patient Details](docs/screenshots/05-admin-login-view-patient-details.png)
+
+### 6. Administrator Edit Patient
+
+![Administrator Edit Patient](docs/screenshots/06-admin-view-edit-patients.png)
+
+### 7. Administrator Delete Patient
+
+![Administrator Delete Patient](docs/screenshots/07-admin-view-delete-patients.png)
+
+### 8. Add New Patient
+
+![Add New Patient](docs/screenshots/08-add-new-patients-view.png)
+
+### 9. Add New Patient - Additional View
+
+![Add New Patient Additional View](docs/screenshots/09-add-new-patients-view-1.png)
+
+### 10. Employee Login View
+
+![Employee Login View](docs/screenshots/10-employee-login-view.png)
+
+### 11. Employee Patient List
+
+![Employee Patient List](docs/screenshots/11-employee-login-view-1.png)
+
+### 12. Employee Patient Details
+
+![Employee Patient Details](docs/screenshots/12-employee-login-view-2-patient-details.png)
+
+### 13. Dynamic Patient Search
+
+![Dynamic Patient Search](docs/screenshots/13-dynamic-search-bar-in-action.png)
+
+### 14. Administrator User Access Management
+
+![Administrator User Access Management](docs/screenshots/14-user-access-page-for-admins.png)
+
+### 15. Dark Theme
+
+![Dark Theme](docs/screenshots/15-dark-theme-view.png)
+
+### 16. Swagger UI
+
+![Swagger UI](docs/screenshots/16-swagger-page.png)
+
+### 17. Swagger API View
+
+![Swagger API View](docs/screenshots/17-swagger-page-1.png)
