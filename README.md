@@ -4,6 +4,8 @@ CarePlus is a full-stack patient lookup and management application built with Sp
 
 The application provides secure patient search and management using JWT authentication and role-based access control.
 
+**Application Screenshots are at the bottom of this page.**
+
 ## Features
 
 * JWT-based authentication
